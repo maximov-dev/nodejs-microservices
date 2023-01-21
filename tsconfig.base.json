@@ -16,7 +16,9 @@
     "strict": true,
     "noImplicitOverride": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@nodejs-microservices/interfaces": ["libs/interfaces/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
