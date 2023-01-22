@@ -19,7 +19,7 @@ export class UserRepository {
   async findUser(email: string) {
     return this.userModel.findOne<User>({
       email,
-    }).exec;
+    }).exec();
   }
 
   async deleteUser(email: string) {
