@@ -7,9 +7,9 @@ export class User extends Document implements IUser {
   @Prop()
   displayName?: string;
   @Prop({ required: true })
-  email = '';
+  email!: string;
   @Prop({ required: true })
-  passwordHash = '';
+  passwordHash!: string;
   @Prop({ required: true, enum: UserRole, type: String, default: UserRole.Student  })
   role = UserRole.Student;
 }
