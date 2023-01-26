@@ -1,4 +1,10 @@
 services:
+  rmq:
+    image: rabbitmq:3-management
+    restart: always
+    ports:
+      - "15672:15672"
+      - "5672:5672"
   mongo:
     image: mongo:4.4.4
     container_name: mongo

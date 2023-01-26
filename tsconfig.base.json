@@ -17,6 +17,7 @@
     "noImplicitOverride": true,
     "baseUrl": ".",
     "paths": {
+      "@nodejs-microservices/contracts": ["libs/contracts/src/index.ts"],
       "@nodejs-microservices/interfaces": ["libs/interfaces/src/index.ts"]
     }
   },
