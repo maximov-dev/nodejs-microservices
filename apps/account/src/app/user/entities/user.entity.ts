@@ -1,5 +1,5 @@
 import { IUser, UserRole } from "@nodejs-microservices/interfaces";
-import { compare, getSalt, hash } from "bcryptjs";
+import {compare, genSalt, getSalt, hash} from "bcryptjs";
 
 export class UserEntity implements IUser {
   _id?: string;
@@ -17,7 +17,7 @@ export class UserEntity implements IUser {
   }
 
   async setPassword(password: string) {
-    const salt = getSalt('hash');
+    const salt = await genSalt(10);
     this.passwordHash = await hash(password, salt);
     return this;
   }
