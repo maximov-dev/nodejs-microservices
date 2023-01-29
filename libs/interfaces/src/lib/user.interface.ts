@@ -8,5 +8,18 @@ export interface IUser {
   displayName?: string;
   email: string;
   passwordHash: string;
-  role: UserRole
+  role: UserRole,
+  courses?: IUserCourses[]
+}
+
+export enum PurchaseState {
+  Started = 'Started',
+  WaitingForPayment = 'WaitingForPayment',
+  Purchased = 'Purchased',
+  Canceled = 'Canceled',
+}
+
+export interface IUserCourses {
+  courseId: string;
+  purchaseState: PurchaseState;
 }

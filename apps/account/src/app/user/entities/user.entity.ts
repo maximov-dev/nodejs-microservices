@@ -1,5 +1,5 @@
-import { IUser, UserRole } from "@nodejs-microservices/interfaces";
-import {compare, genSalt, getSalt, hash} from "bcryptjs";
+import { IUser, IUserCourses, UserRole } from "@nodejs-microservices/interfaces";
+import { compare, genSalt, hash } from "bcryptjs";
 
 export class UserEntity implements IUser {
   _id?: string;
@@ -7,6 +7,7 @@ export class UserEntity implements IUser {
   email: string;
   passwordHash = '';
   role: UserRole;
+  courses?: IUserCourses[];
 
   constructor(user: IUser) {
     this._id = user._id;
@@ -14,6 +15,7 @@ export class UserEntity implements IUser {
     this.passwordHash = user.passwordHash;
     this.email = user.email;
     this.role = user.role;
+    this.courses = user.courses;
   }
 
   async setPassword(password: string) {
@@ -24,5 +26,18 @@ export class UserEntity implements IUser {
 
   validatePassword(password: string) {
     return compare(password, this.passwordHash);
+  }
+
+  updateProfile(displayName: string) {
+    this.displayName = displayName;
+    return this;
+  }
+
+  getPublicProfile() {
+    return {
+      email: this.email,
+      role: this.role,
+      displayName: this.displayName,
+    }
   }
 }

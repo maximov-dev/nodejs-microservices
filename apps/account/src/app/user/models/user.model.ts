@@ -1,6 +1,21 @@
-import { Document } from 'mongoose';
-import { IUser, UserRole } from '@nodejs-microservices/interfaces';
+import { Document, Types } from 'mongoose';
+import {
+  IUser,
+  IUserCourses,
+  PurchaseState,
+  UserRole,
+} from '@nodejs-microservices/interfaces';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+
+@Schema()
+export class UserCourses extends Document implements IUserCourses {
+  @Prop({ required: true })
+  courseId!: string;
+  @Prop({ required: true, enum: PurchaseState, type: String })
+  purchaseState!: PurchaseState;
+}
+
+export const UserCoursesSchema = SchemaFactory.createForClass(UserCourses);
 
 @Schema()
 export class User extends Document implements IUser {
@@ -10,8 +25,16 @@ export class User extends Document implements IUser {
   email!: string;
   @Prop({ required: true })
   passwordHash!: string;
-  @Prop({ required: true, enum: UserRole, type: String, default: UserRole.Student  })
+  @Prop({
+    required: true,
+    enum: UserRole,
+    type: String,
+    default: UserRole.Student,
+  })
   role = UserRole.Student;
+
+  @Prop({ type: [UserCoursesSchema], _id: false })
+  courses?: Types.Array<UserCourses>
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
