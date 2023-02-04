@@ -1,5 +1,5 @@
-import { IUser, IUserCourses, UserRole } from "@nodejs-microservices/interfaces";
-import { compare, genSalt, hash } from "bcryptjs";
+import {IUser, IUserCourses, PurchaseState, UserRole} from "@nodejs-microservices/interfaces";
+import {compare, genSalt, hash} from "bcryptjs";
 
 export class UserEntity implements IUser {
   _id?: string;
@@ -39,5 +39,33 @@ export class UserEntity implements IUser {
       role: this.role,
       displayName: this.displayName,
     }
+  }
+
+  addCourse(courseId: string) {
+    const courseExists = this.courses?.find(course => course.courseId === courseId)
+
+    if (courseExists) {
+      throw new Error('Course already exists');
+    }
+
+    this.courses?.push({
+      courseId,
+      purchaseState: PurchaseState.Started
+    })
+  }
+
+  deleteCourse(courseId: string) {
+    this.courses = this.courses?.filter(course => course.courseId !== courseId);
+  }
+
+  updateCourseStatus(courseId: string, state: PurchaseState) {
+    this.courses = this.courses?.map(course => {
+      if (course.courseId === courseId) {
+        course.purchaseState = state;
+        return course;
+      }
+
+      return course;
+    })
   }
 }
