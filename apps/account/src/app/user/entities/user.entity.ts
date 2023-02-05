@@ -1,8 +1,8 @@
-import {IUser, IUserCourses, PurchaseState, UserRole} from "@nodejs-microservices/interfaces";
-import {compare, genSalt, hash} from "bcryptjs";
+import { IUser, IUserCourses, PurchaseState, UserRole } from "@nodejs-microservices/interfaces";
+import { compare, genSalt, hash } from "bcryptjs";
 
 export class UserEntity implements IUser {
-  _id?: string;
+  _id!: string;
   displayName?: string;
   email: string;
   passwordHash = '';
