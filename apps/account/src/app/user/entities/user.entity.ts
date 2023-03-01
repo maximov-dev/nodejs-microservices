@@ -2,7 +2,7 @@ import { IUser, IUserCourses, PurchaseState, UserRole } from "@nodejs-microservi
 import { compare, genSalt, hash } from "bcryptjs";
 
 export class UserEntity implements IUser {
-  _id!: string;
+  _id!: string | undefined;
   displayName?: string;
   email: string;
   passwordHash = '';
@@ -41,24 +41,22 @@ export class UserEntity implements IUser {
     }
   }
 
-  addCourse(courseId: string) {
-    const courseExists = this.courses?.find(course => course.courseId === courseId)
+  setCourseStatus(courseId: string, state: PurchaseState) {
+    const exists = this.courses?.find(course => course.courseId === courseId)
 
-    if (courseExists) {
-      throw new Error('Course already exists');
+    if (!exists ) {
+      this.courses?.push({
+        courseId,
+        purchaseState: PurchaseState.Started
+      })
+
+      return this;
     }
 
-    this.courses?.push({
-      courseId,
-      purchaseState: PurchaseState.Started
-    })
-  }
+    if (state === PurchaseState.Canceled) {
+      this.courses = this.courses?.filter((course) => course.courseId !== courseId)
+    }
 
-  deleteCourse(courseId: string) {
-    this.courses = this.courses?.filter(course => course.courseId !== courseId);
-  }
-
-  updateCourseStatus(courseId: string, state: PurchaseState) {
     this.courses = this.courses?.map(course => {
       if (course.courseId === courseId) {
         course.purchaseState = state;
@@ -67,5 +65,7 @@ export class UserEntity implements IUser {
 
       return course;
     })
+
+    return this;
   }
 }
