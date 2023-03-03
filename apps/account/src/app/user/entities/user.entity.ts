@@ -1,5 +1,12 @@
-import { IUser, IUserCourses, PurchaseState, UserRole } from "@nodejs-microservices/interfaces";
-import { compare, genSalt, hash } from "bcryptjs";
+import {
+  IDomainEvent,
+  IUser,
+  IUserCourses,
+  PurchaseState,
+  UserRole,
+} from '@nodejs-microservices/interfaces';
+import { compare, genSalt, hash } from 'bcryptjs';
+import { AccountChangedCourse } from '@nodejs-microservices/contracts';
 
 export class UserEntity implements IUser {
   _id!: string | undefined;
@@ -8,6 +15,7 @@ export class UserEntity implements IUser {
   passwordHash = '';
   role: UserRole;
   courses?: IUserCourses[];
+  events: IDomainEvent[] = [];
 
   constructor(user: IUser) {
     this._id = user._id;
@@ -38,33 +46,40 @@ export class UserEntity implements IUser {
       email: this.email,
       role: this.role,
       displayName: this.displayName,
-    }
+    };
   }
 
   setCourseStatus(courseId: string, state: PurchaseState) {
-    const exists = this.courses?.find(course => course.courseId === courseId)
+    const exists = this.courses?.find((course) => course.courseId === courseId);
 
-    if (!exists ) {
+    if (!exists) {
       this.courses?.push({
         courseId,
-        purchaseState: PurchaseState.Started
-      })
+        purchaseState: PurchaseState.Started,
+      });
 
       return this;
     }
 
     if (state === PurchaseState.Canceled) {
-      this.courses = this.courses?.filter((course) => course.courseId !== courseId)
+      this.courses = this.courses?.filter(
+        (course) => course.courseId !== courseId
+      );
     }
 
-    this.courses = this.courses?.map(course => {
+    this.courses = this.courses?.map((course) => {
       if (course.courseId === courseId) {
         course.purchaseState = state;
         return course;
       }
 
       return course;
-    })
+    });
+
+    this.events?.push({
+      topic: AccountChangedCourse.topic,
+      data: { courseId, userId: this._id, state },
+    });
 
     return this;
   }

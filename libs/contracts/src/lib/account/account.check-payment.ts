@@ -1,5 +1,5 @@
 import { IsString } from 'class-validator';
-import {PaymentStatus} from "../payment/paymentStatus";
+import { PaymentStatus } from "../payment/paymentStatus";
 
 export namespace AccountCheckPayment {
 
